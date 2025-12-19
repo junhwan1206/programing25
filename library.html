@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>내 프로젝트 · 라이브러리</title>
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      .wrap2{ width:min(1100px, 100%); margin:0 auto; padding:18px; }
+      .panel{
+        background: rgba(255,255,255,0.92);
+        border: 1px solid rgba(16,24,40,0.08);
+        border-radius: 20px;
+        box-shadow: 0 16px 36px rgba(16,24,40,0.08);
+        padding: 16px;
+      }
+      .h2{ margin:0; font-size:16px; font-weight:900; letter-spacing:-0.3px; }
+      .muted{ opacity:0.7; font-size:12px; }
+      .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+      .row > *{ flex: 1 1 auto; }
+
+      .input{
+        width:100%;
+        padding:10px 12px;
+        border-radius:14px;
+        border:1px solid rgba(16,24,40,0.12);
+        background:#fff;
+        outline:none;
+      }
+      .input:focus{
+        border-color: rgba(99,102,241,0.45);
+        box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+      }
+
+      .btn2{
+        appearance:none;
+        border:1px solid rgba(16,24,40,0.12);
+        background:#fff;
+        color:#101828;
+        border-radius:14px;
+        padding:10px 12px;
+        font-weight:900;
+        cursor:pointer;
+        transition: transform 160ms ease, box-shadow 160ms ease;
+        white-space:nowrap;
+      }
+      .btn2:hover{ transform: translateY(-2px); box-shadow: 0 12px 22px rgba(16,24,40,0.08); }
+      .btn2.primary{ background:#101828; color:#fff; border-color:#101828; }
+      .btn2.danger{ border-color: rgba(239,68,68,0.25); background: rgba(239,68,68,0.08); }
+      .btn2:disabled{ opacity:.5; cursor:not-allowed; transform:none; box-shadow:none; }
+
+      .grid{
+        margin-top: 14px;
+        display:grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      @media (max-width: 980px){ .grid{ grid-template-columns: repeat(2, 1fr);} }
+      @media (max-width: 620px){ .grid{ grid-template-columns: 1fr;} }
+
+      .card{
+        border-radius: 18px;
+        border: 1px solid rgba(16,24,40,0.10);
+        background:#fff;
+        padding: 14px;
+        display:grid;
+        gap: 10px;
+      }
+      .cardTop{
+        display:flex;
+        justify-content:space-between;
+        align-items:flex-start;
+        gap:10px;
+      }
+      .title{
+        font-size:14px;
+        font-weight: 1000;
+        letter-spacing:-0.2px;
+        margin:0;
+        line-height:1.2;
+      }
+      .meta{
+        font-size:12px;
+        opacity:0.7;
+        font-weight: 900;
+      }
+      .badges{ display:flex; gap:6px; flex-wrap:wrap; }
+      .badge{
+        display:inline-flex;
+        align-items:center;
+        gap:6px;
+        padding:6px 10px;
+        border-radius:999px;
+        border:1px solid rgba(16,24,40,0.10);
+        background: rgba(255,255,255,0.85);
+        font-size:12px;
+        font-weight:900;
+      }
+      .divider{ border:none; border-top:1px solid rgba(16,24,40,0.08); margin:14px 0; }
+    </style>
+  </head>
+
+  <body>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <div class="brand">
+          <div class="brand__logo" aria-hidden="true">▶</div>
+          <div class="brand__text">
+            <div class="brand__name">Video Studio</div>
+            <div class="brand__tag">Edit · Organize · Discover</div>
+          </div>
+        </div>
+        <nav class="actions">
+          <a class="btn btn--ghost" href="../index.html">메인</a>
+          <a class="btn" href="./library.html">내 프로젝트</a>
+          <a class="btn btn--ghost" href="./resources.html">추가 자료</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="wrap2">
+        <section class="panel">
+          <div class="row" style="align-items:flex-end;">
+            <div style="flex:2 1 320px;">
+              <h2 class="h2">내 프로젝트</h2>
+              <div class="muted">프로젝트 설정(클립/자막/필터/워터마크)을 저장하고 다시 열 수 있어.</div>
+            </div>
+            <div style="flex: 1 1 220px;">
+              <div class="muted" style="margin-bottom:6px;">검색</div>
+              <input id="search" class="input" placeholder="프로젝트 이름 검색" />
+            </div>
+          </div>
+
+          <hr class="divider" />
+
+          <div class="row">
+            <input id="newName" class="input" placeholder="새 프로젝트 이름 (예: 12/19 하이라이트)" />
+            <button id="newBtn" class="btn2 primary" type="button">새 프로젝트</button>
+            <button id="importBtn" class="btn2" type="button">가져오기(JSON)</button>
+            <button id="exportAllBtn" class="btn2" type="button">전체 내보내기</button>
+            <button id="wipeBtn" class="btn2 danger" type="button">전체 삭제</button>
+            <input id="importFile" type="file" accept="application/json" style="display:none;" />
+          </div>
+
+          <div class="muted" style="margin-top:8px;">
+            ※ 영상 파일은 저장되지 않아. 프로젝트 열고 나면 영상은 다시 선택해야 해(브라우저 보안 때문).
+          </div>
+
+          <div id="grid" class="grid" style="margin-top:14px;"></div>
+        </section>
+      </div>
+    </main>
+
+    <script src="./library.js"></script>
+  </body>
+</html>

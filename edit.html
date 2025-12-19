@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>영상 편집하기</title>
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      .editor {
+        width: min(1100px, 100%);
+        margin: 0 auto;
+        padding: 18px;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 14px;
+      }
+      .panelBox {
+        background: rgba(255,255,255,0.92);
+        border: 1px solid rgba(16,24,40,0.08);
+        border-radius: 20px;
+        box-shadow: 0 16px 36px rgba(16,24,40,0.08);
+        padding: 16px;
+      }
+      .previewWrap { display: grid; gap: 10px; }
+      .previewTop { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+      .h2 { margin:0; font-size:16px; font-weight:900; letter-spacing:-0.3px; }
+      .muted { opacity:.7; font-size:12px; }
+      .row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+      .row > * { flex: 1 1 auto; }
+
+      .btn2{
+        appearance:none;
+        border:1px solid rgba(16,24,40,0.12);
+        background:#fff;
+        color:#101828;
+        border-radius:14px;
+        padding:10px 12px;
+        font-weight:900;
+        cursor:pointer;
+        transition: transform 160ms ease, box-shadow 160ms ease;
+      }
+      .btn2:hover{ transform: translateY(-2px); box-shadow:0 12px 22px rgba(16,24,40,0.08); }
+      .btn2.primary{ background:#101828; color:#fff; border-color:#101828; }
+      .btn2:disabled{ opacity:.5; cursor:not-allowed; transform:none; box-shadow:none; }
+
+      .canvas{
+        width:100%;
+        aspect-ratio: 16/9;
+        border-radius:18px;
+        background:#0b0f19;
+        display:block;
+        border:1px solid rgba(16,24,40,0.10);
+      }
+
+      .slider{ width:100%; }
+
+      .grid2{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+        gap:10px;
+      }
+
+      .field{ display:grid; gap:6px; }
+      .label{ font-size:12px; font-weight:900; opacity:.75; }
+
+      .input{
+        width:100%;
+        padding:10px 12px;
+        border-radius:14px;
+        border:1px solid rgba(16,24,40,0.12);
+        background:#fff;
+        outline:none;
+      }
+      .input:focus{
+        border-color: rgba(99,102,241,0.45);
+        box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+      }
+
+      .pill{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        padding:8px 10px;
+        border-radius:999px;
+        border:1px solid rgba(16,24,40,0.10);
+        background: rgba(255,255,255,0.8);
+        font-size:12px;
+        font-weight:900;
+      }
+
+      .download{
+        display:none;
+        margin-top:10px;
+        padding:12px;
+        border-radius:16px;
+        border:1px solid rgba(34,197,94,0.25);
+        background: rgba(34,197,94,0.10);
+        font-weight:900;
+      }
+
+      /* 리스트 UI 공용 */
+      .listBox{
+        display: grid;
+        gap: 8px;
+        margin-top: 6px;
+        padding: 10px;
+        border-radius: 16px;
+        border: 1px solid rgba(16,24,40,0.10);
+        background: rgba(255,255,255,0.65);
+        max-height: 210px;
+        overflow: auto;
+      }
+      .item{
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        border-radius: 14px;
+        border: 1px solid rgba(16,24,40,0.10);
+        background: #fff;
+      }
+      .itemMain{
+        display: grid;
+        gap: 4px;
+        cursor: pointer;
+      }
+      .itemTime{
+        font-size: 12px;
+        font-weight: 900;
+        opacity: 0.75;
+      }
+      .itemText{
+        font-size: 13px;
+        font-weight: 900;
+        letter-spacing: -0.2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .itemBtns{
+        display:flex;
+        gap:8px;
+        align-items:center;
+      }
+      .miniBtn{
+        border: 1px solid rgba(16,24,40,0.12);
+        background:#fff;
+        border-radius: 12px;
+        padding: 8px 10px;
+        font-weight: 900;
+        cursor:pointer;
+      }
+      .miniBtn.danger{
+        border-color: rgba(239,68,68,0.30);
+        background: rgba(239,68,68,0.08);
+      }
+
+      @media (max-width: 900px){
+        .editor { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <div class="brand">
+          <div class="brand__logo" aria-hidden="true">▶</div>
+          <div class="brand__text">
+            <div class="brand__name">Video Studio</div>
+            <div class="brand__tag">Edit · Organize · Discover</div>
+          </div>
+        </div>
+        <nav class="actions">
+          <a class="btn btn--ghost" href="../index.html">메인</a>
+          <a class="btn btn--ghost" href="./library.html">내 프로젝트</a>
+          <a class="btn" href="./resources.html">추가 자료</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="editor">
+        <!-- 왼쪽: 프리뷰 -->
+        <section class="panelBox previewWrap">
+          <div class="previewTop">
+            <h2 class="h2">프리뷰</h2>
+            <span class="pill" id="timeInfo">00:00 / 00:00</span>
+          </div>
+
+          <canvas id="canvas" class="canvas"></canvas>
+
+          <div class="row">
+            <input id="file" type="file" accept="video/*" class="btn2" />
+            <button id="play" class="btn2 primary" type="button" disabled>재생</button>
+            <button id="pause" class="btn2" type="button" disabled>일시정지</button>
+          </div>
+
+          <div class="field">
+            <div class="label">탐색</div>
+            <input id="seek" class="slider" type="range" min="0" max="1000" value="0" disabled />
+            <div class="muted">In/Out은 “한 구간”, 클립 모드는 “여러 구간 이어붙이기”</div>
+          </div>
+
+          <div class="grid2">
+            <div class="field">
+              <div class="label">In (시작)</div>
+              <input id="inTime" class="input" type="number" min="0" step="0.01" value="0" disabled />
+              <button id="setIn" class="btn2" type="button" disabled>현재 위치를 In으로</button>
+            </div>
+            <div class="field">
+              <div class="label">Out (끝)</div>
+              <input id="outTime" class="input" type="number" min="0" step="0.01" value="0" disabled />
+              <button id="setOut" class="btn2" type="button" disabled>현재 위치를 Out으로</button>
+            </div>
+          </div>
+
+          <div class="row">
+            <label class="pill" style="cursor:pointer;">
+              <input id="loop" type="checkbox" />
+              반복
+            </label>
+
+            <label class="pill" style="cursor:pointer;">
+              속도
+              <input id="speed" type="range" min="0.25" max="2" step="0.05" value="1" style="width:140px;" disabled />
+              <span id="speedText">1.00x</span>
+            </label>
+          </div>
+
+          <div class="row">
+            <button id="export" class="btn2 primary" type="button" disabled>내보내기(WebM)</button>
+            <a id="download" class="download" href="#" download="export.webm">내보낸 파일 다운로드</a>
+          </div>
+
+          <div class="muted">※ 내보내기: In/Out 또는 “클립 리스트” 기준으로 저장됨</div>
+        </section>
+
+        <!-- 오른쪽: 편집 옵션 -->
+        <aside class="panelBox">
+          <h2 class="h2" style="margin-bottom:10px;">편집 옵션</h2>
+
+          <!-- ✅ 클립(여러 구간) -->
+          <div class="field">
+            <div class="label">클립(여러 구간 잘라서 합치기)</div>
+
+            <label class="pill" style="cursor:pointer; width:fit-content;">
+              <input id="clipsOn" type="checkbox" />
+              클립 모드 사용 (내보내기/재생에 적용)
+            </label>
+
+            <div class="row">
+              <button id="clipAdd" class="btn2 primary" type="button" disabled>In~Out을 클립으로 추가</button>
+              <button id="clipClearAll" class="btn2" type="button" disabled>클립 전체 삭제</button>
+            </div>
+
+            <div class="muted">여러 클립을 추가하면, 필요 없는 중간 부분은 자연스럽게 빠져.</div>
+
+            <div id="clipList" class="listBox" aria-label="클립 목록"></div>
+          </div>
+
+          <hr style="border:none;border-top:1px solid rgba(16,24,40,0.08); margin:14px 0;" />
+
+          <!-- 필터 -->
+          <div class="field">
+            <div class="label">필터</div>
+            <div class="grid2">
+              <label class="field">
+                <span class="label">밝기 (%)</span>
+                <input id="bright" class="slider" type="range" min="50" max="150" value="100" disabled />
+              </label>
+              <label class="field">
+                <span class="label">대비 (%)</span>
+                <input id="contrast" class="slider" type="range" min="50" max="150" value="100" disabled />
+              </label>
+              <label class="field">
+                <span class="label">채도 (%)</span>
+                <input id="sat" class="slider" type="range" min="0" max="200" value="100" disabled />
+              </label>
+              <label class="field">
+                <span class="label">블러 (px)</span>
+                <input id="blur" class="slider" type="range" min="0" max="10" value="0" disabled />
+              </label>
+            </div>
+
+            <div class="row" style="margin-top:8px;">
+              <button id="resetFx" class="btn2" type="button" disabled>필터 초기화</button>
+            </div>
+          </div>
+
+          <hr style="border:none;border-top:1px solid rgba(16,24,40,0.08); margin:14px 0;" />
+
+          <!-- 텍스트 오버레이(워터마크) -->
+          <div class="field">
+            <div class="label">텍스트 오버레이(워터마크)</div>
+
+            <label class="field">
+              <span class="label">문구</span>
+              <input id="text" class="input" type="text" placeholder="예: Video Studio" disabled />
+            </label>
+
+            <div class="grid2">
+              <label class="field">
+                <span class="label">크기</span>
+                <input id="textSize" class="input" type="number" min="10" max="120" value="42" disabled />
+              </label>
+              <label class="field">
+                <span class="label">색상</span>
+                <input id="textColor" class="input" type="color" value="#ffffff" disabled />
+              </label>
+            </div>
+
+            <div class="grid2">
+              <label class="field">
+                <span class="label">X (0~1)</span>
+                <input id="textX" class="input" type="number" min="0" max="1" step="0.01" value="0.05" disabled />
+              </label>
+              <label class="field">
+                <span class="label">Y (0~1)</span>
+                <input id="textY" class="input" type="number" min="0" max="1" step="0.01" value="0.92" disabled />
+              </label>
+            </div>
+
+            <div class="muted">X/Y는 화면 비율 좌표예요.</div>
+          </div>
+
+          <hr style="border:none;border-top:1px solid rgba(16,24,40,0.08); margin:14px 0;" />
+
+          <!-- ✅ 자막 트랙 -->
+          <div class="field">
+            <div class="label">자막 트랙(구간별)</div>
+
+            <label class="pill" style="cursor:pointer; width:fit-content;">
+              <input id="subsOn" type="checkbox" checked />
+              자막 표시
+            </label>
+
+            <label class="field">
+              <span class="label">자막 내용</span>
+              <input id="subTextInput" class="input" type="text" placeholder="예: 안녕하세요! 오늘은..." disabled />
+            </label>
+
+            <div class="grid2">
+              <div class="field">
+                <span class="label">시작(초)</span>
+                <input id="subStart" class="input" type="number" step="0.01" value="0" disabled />
+                <button id="subSetStart" class="btn2" type="button" disabled>현재를 시작으로</button>
+              </div>
+              <div class="field">
+                <span class="label">끝(초)</span>
+                <input id="subEnd" class="input" type="number" step="0.01" value="2" disabled />
+                <button id="subSetEnd" class="btn2" type="button" disabled>현재를 끝으로</button>
+              </div>
+            </div>
+
+            <div class="grid2">
+              <label class="field">
+                <span class="label">크기</span>
+                <input id="subSize" class="input" type="number" min="14" max="120" value="44" disabled />
+              </label>
+              <label class="field">
+                <span class="label">색상</span>
+                <input id="subColor" class="input" type="color" value="#ffffff" disabled />
+              </label>
+            </div>
+
+            <div class="row">
+              <button id="subAdd" class="btn2 primary" type="button" disabled>자막 추가</button>
+              <button id="subUpdate" class="btn2" type="button" disabled>선택 자막 수정</button>
+              <button id="subClear" class="btn2" type="button" disabled>입력 초기화</button>
+            </div>
+
+            <div class="muted">리스트에서 자막 클릭 → 수정 가능</div>
+            <div id="subList" class="listBox" aria-label="자막 목록"></div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <video id="video" playsinline style="display:none;"></video>
+    <script src="./edit.js"></script>
+  </body>
+</html>

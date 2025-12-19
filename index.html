@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Video Studio</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+
+  <body>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <div class="brand">
+          <div class="brand__logo" aria-hidden="true">▶</div>
+          <div class="brand__text">
+            <div class="brand__name">Video Studio</div>
+            <div class="brand__tag">Edit · Organize · Discover</div>
+          </div>
+        </div>
+
+        <nav class="actions">
+          <a class="btn btn--ghost" href="./pages/library.html">내 프로젝트</a>
+          <a class="btn" href="./pages/edit.html">새 편집 시작</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <section class="hero">
+        <h1 class="hero__title">무엇을 할까요?</h1>
+        <p class="hero__subtitle">영상 편집, 라이브러리 관리, 추가 자료 탐색을 한 곳에서.</p>
+
+        <div class="cards">
+          <a class="card" href="./pages/edit.html" aria-label="영상 편집하기로 이동">
+            <div class="card__icon" aria-hidden="true">🎬</div>
+            <div class="card__title">영상 편집하기</div>
+            <div class="card__desc">자르기 · 자막 · BGM · 필터</div>
+          </a>
+
+          <a class="card" href="./pages/library.html" aria-label="라이브러리로 이동">
+            <div class="card__icon" aria-hidden="true">📁</div>
+            <div class="card__title">라이브러리</div>
+            <div class="card__desc">프로젝트 · 영상 · 에셋 정리</div>
+          </a>
+
+          <a class="card" href="./pages/resources.html" aria-label="추가 자료 찾기">
+            <div class="card__icon" aria-hidden="true">🔎</div>
+            <div class="card__title">추가 자료 찾기</div>
+            <div class="card__desc">무료 소스 · 음악 · 효과음</div>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer__inner">© Video Studio</div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>추가 자료 · Video Studio</title>
+    <link rel="stylesheet" href="../style.css" />
+    <style>
+      .wrap2{ width:min(900px, 100%); margin:0 auto; padding:18px; }
+      .panel{
+        background: rgba(255,255,255,0.92);
+        border: 1px solid rgba(16,24,40,0.08);
+        border-radius: 20px;
+        box-shadow: 0 16px 36px rgba(16,24,40,0.08);
+        padding: 16px;
+      }
+      .h2{ margin:0; font-size:16px; font-weight:900; letter-spacing:-0.3px; }
+      .muted{ opacity:0.7; font-size:12px; }
+      .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+      .input{
+        width:100%;
+        padding:10px 12px;
+        border-radius:14px;
+        border:1px solid rgba(16,24,40,0.12);
+        background:#fff;
+        outline:none;
+      }
+      .input:focus{
+        border-color: rgba(99,102,241,0.45);
+        box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+      }
+      .linkList{ margin-top:12px; display:grid; gap:10px; }
+      .item{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:12px;
+        padding:12px 14px;
+        border-radius:16px;
+        border:1px solid rgba(16,24,40,0.10);
+        background:#fff;
+      }
+      .title{ font-size:14px; font-weight:1000; margin:0; }
+      .desc{ font-size:12px; opacity:.75; font-weight:900; margin-top:2px; }
+      .btn2{
+        appearance:none;
+        border:1px solid rgba(16,24,40,0.12);
+        background:#fff;
+        color:#101828;
+        border-radius:14px;
+        padding:10px 12px;
+        font-weight:900;
+        cursor:pointer;
+        white-space:nowrap;
+      }
+      .btn2.primary{ background:#101828; color:#fff; border-color:#101828; }
+      .divider{ border:none; border-top:1px solid rgba(16,24,40,0.08); margin:14px 0; }
+    </style>
+  </head>
+
+  <body>
+    <header class="topbar">
+      <div class="topbar__inner">
+        <div class="brand">
+          <div class="brand__logo" aria-hidden="true">▶</div>
+          <div class="brand__text">
+            <div class="brand__name">Video Studio</div>
+            <div class="brand__tag">Edit · Organize · Discover</div>
+          </div>
+        </div>
+        <nav class="actions">
+          <a class="btn btn--ghost" href="../index.html">메인</a>
+          <a class="btn btn--ghost" href="./library.html">내 프로젝트</a>
+          <a class="btn" href="./resources.html">추가 자료</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div class="wrap2">
+        <section class="panel">
+          <div class="row" style="align-items:flex-end;">
+            <div style="flex:2 1 360px;">
+              <h2 class="h2">추가 자료</h2>
+              <div class="muted">검색어를 넣고 관련 링크를 빠르게 찾아봐.</div>
+            </div>
+            <div style="flex:1 1 260px;">
+              <div class="muted" style="margin-bottom:6px;">검색</div>
+              <input id="q" class="input" placeholder="예: 자막, 컷편집, 색보정, webm, MediaRecorder..." />
+            </div>
+          </div>
+
+          <hr class="divider" />
+
+          <div class="row">
+            <button id="searchGoogle" class="btn2 primary" type="button">Google로 검색</button>
+            <button id="searchYouTube" class="btn2" type="button">YouTube로 검색</button>
+            <button id="searchNaver" class="btn2" type="button">네이버로 검색</button>
+          </div>
+
+          <div id="list" class="linkList"></div>
+        </section>
+      </div>
+    </main>
+
+    <script src="./resources.js"></script>
+  </body>
+</html>
